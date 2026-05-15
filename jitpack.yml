@@ -1,4 +1,5 @@
 jdk:
   - openjdk17
 before_install:
-  - yes | sdkmanager "platforms;android-37"
+  - yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-37"
+  - yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;35.0.0"
