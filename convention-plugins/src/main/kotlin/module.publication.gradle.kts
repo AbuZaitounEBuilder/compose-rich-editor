@@ -5,7 +5,9 @@ plugins {
 
 mavenPublishing {
     publishToMavenCentral()
-    signAllPublications()
+    if (System.getenv("CI") == null) {
+        signAllPublications()
+    }
 
     coordinates(group.toString(), project.name, version.toString())
 

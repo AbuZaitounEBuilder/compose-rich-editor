@@ -20,5 +20,6 @@ jobs:
       - name: Publish to GitHub Packages
         run: ./gradlew :richeditor-compose:publishAllPublicationsToGitHubPackagesRepository
         env:
+          CI: "true"
+          GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
