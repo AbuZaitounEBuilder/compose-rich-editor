@@ -1655,11 +1655,19 @@ public class RichTextState internal constructor(
         }
 
         styledRichSpanList.clear()
-        textFieldValue = newTextFieldValue.copy(text = annotatedString.text)
+        val newTextLength = annotatedString.text.length
+        textFieldValue = newTextFieldValue.copy(
+            text = annotatedString.text,
+            selection = TextRange(
+                newTextFieldValue.selection.start.coerceIn(0, newTextLength),
+                newTextFieldValue.selection.end.coerceIn(0, newTextLength),
+            ),
+        )
+        val safeAnnotatedString = annotatedString
         visualTransformation = VisualTransformation { _ ->
             TransformedText(
-                text = annotatedString,
-                offsetMapping = OffsetMapping.Identity
+                text = safeAnnotatedString,
+                offsetMapping = clampingOffsetMapping(safeAnnotatedString.text.length)
             )
         }
         styledRichSpanList.addAll(newStyledRichSpanList)
@@ -3952,10 +3960,11 @@ public class RichTextState internal constructor(
             text = annotatedString.text,
             selection = TextRange(selectionIndex),
         )
+        val safeAnnotatedString = annotatedString
         visualTransformation = VisualTransformation { _ ->
             TransformedText(
-                text = annotatedString,
-                offsetMapping = OffsetMapping.Identity
+                text = safeAnnotatedString,
+                offsetMapping = clampingOffsetMapping(safeAnnotatedString.text.length)
             )
         }
         styledRichSpanList.addAll(newStyledRichSpanList)
@@ -4095,3 +4104,20 @@ public class RichTextState internal constructor(
         )
     }
 }
+
+/**
+ * Creates an [OffsetMapping] that behaves like [OffsetMapping.Identity] but
+ * clamps offsets to valid ranges instead of crashing. This guards against
+ * a race condition where [RichTextState.textFieldValue] and
+ * [RichTextState.visualTransformation] are read from different snapshot
+ * versions during recomposition (e.g. in a LazyColumn scroll), causing
+ * the original and transformed text lengths to temporarily differ.
+ */
+private fun clampingOffsetMapping(transformedLength: Int): OffsetMapping = object : OffsetMapping {
+    override fun originalToTransformed(offset: Int): Int =
+        offset.coerceIn(0, transformedLength)
+
+    override fun transformedToOriginal(offset: Int): Int =
+        offset.coerceIn(0, transformedLength)
+}
+
