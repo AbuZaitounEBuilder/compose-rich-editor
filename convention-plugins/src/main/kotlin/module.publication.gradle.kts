@@ -1,5 +1,6 @@
 plugins {
     id("com.vanniktech.maven.publish")
+    `maven-publish`
 }
 
 mavenPublishing {
@@ -33,6 +34,19 @@ mavenPublishing {
         scm {
             connection.set("https://github.com/MohamedRejeb/Compose-Rich-Editor.git")
             url.set("https://github.com/MohamedRejeb/Compose-Rich-Editor")
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/AbuZaitounEBuilder/compose-rich-editor")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?: ""
+                password = System.getenv("GITHUB_TOKEN") ?: ""
+            }
         }
     }
 }
