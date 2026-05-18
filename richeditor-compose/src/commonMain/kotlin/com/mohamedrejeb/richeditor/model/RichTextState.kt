@@ -2070,7 +2070,7 @@ public class RichTextState internal constructor(
             tempTextFieldValue.selection != textFieldValue.selection
         ) {
             val lastPressPosition = this.lastPressPosition
-            if (lastPressPosition != null) {
+            if (lastPressPosition != null && newTextFieldValue.selection.collapsed) {
                 adjustSelection(lastPressPosition, newTextFieldValue.selection)
                 return
             }
@@ -2102,20 +2102,13 @@ public class RichTextState internal constructor(
             tempTextFieldValue.text == textFieldValue.text &&
             tempTextFieldValue.selection != textFieldValue.selection
         ) {
-            // Pure selection change: normally we only reassign textFieldValue and skip
-            // rebuilding annotatedString. But the annotatedString carries a
-            // selection-dependent mask that drops background colors underneath the live
-            // selection (see AnnotatedStringExt.append - prevents an opaque span
-            // background from hiding the system selection highlight). If either the
-            // previous or the new selection is non-collapsed, the mask set differs and
-            // the cached annotatedString is stale - so force a rebuild. See #635.
-            val maskAffected =
-                !textFieldValue.selection.collapsed || !tempTextFieldValue.selection.collapsed
-            if (maskAffected) {
-                updateAnnotatedString(tempTextFieldValue)
-            } else {
-                textFieldValue = tempTextFieldValue
-            }
+            // Pure selection change: just update textFieldValue without rebuilding
+            // annotatedString. Rebuilding on every selection change creates a new
+            // VisualTransformation instance which causes BasicTextField to recompose
+            // and interrupts active selection handle drags. See #635 for the original
+            // mask motivation – we defer the mask rebuild until the drag ends (next
+            // text edit or collapsed selection).
+            textFieldValue = tempTextFieldValue
         } else {
             // Update the annotatedString and the textFieldValue with the new values
             updateAnnotatedString(tempTextFieldValue)
