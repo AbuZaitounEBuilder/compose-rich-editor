@@ -5,15 +5,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.mohamedrejeb.richeditor.common.generated.resources.Raleway_Bold
-import com.mohamedrejeb.richeditor.common.generated.resources.Raleway_BoldItalic
-import com.mohamedrejeb.richeditor.common.generated.resources.Raleway_Italic
-import com.mohamedrejeb.richeditor.common.generated.resources.Raleway_Medium
-import com.mohamedrejeb.richeditor.common.generated.resources.Raleway_MediumItalic
-import com.mohamedrejeb.richeditor.common.generated.resources.Raleway_Regular
-import com.mohamedrejeb.richeditor.common.generated.resources.Raleway_SemiBold
-import com.mohamedrejeb.richeditor.common.generated.resources.Raleway_SemiBoldItalic
-import com.mohamedrejeb.richeditor.common.generated.resources.Res
+import io.github.abuzaitounebuilder.common.generated.resources.Raleway_Bold
+import io.github.abuzaitounebuilder.common.generated.resources.Raleway_BoldItalic
+import io.github.abuzaitounebuilder.common.generated.resources.Raleway_Italic
+import io.github.abuzaitounebuilder.common.generated.resources.Raleway_Medium
+import io.github.abuzaitounebuilder.common.generated.resources.Raleway_MediumItalic
+import io.github.abuzaitounebuilder.common.generated.resources.Raleway_Regular
+import io.github.abuzaitounebuilder.common.generated.resources.Raleway_SemiBold
+import io.github.abuzaitounebuilder.common.generated.resources.Raleway_SemiBoldItalic
+import io.github.abuzaitounebuilder.common.generated.resources.Res
 import org.jetbrains.compose.resources.Font
 
 val Raleway

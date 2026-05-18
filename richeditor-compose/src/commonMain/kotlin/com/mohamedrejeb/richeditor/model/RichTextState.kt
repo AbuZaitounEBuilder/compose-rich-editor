@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.util.fastFirstOrNull
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
@@ -191,7 +192,7 @@ public class RichTextState internal constructor(
 
     @Deprecated(
         message = "Use isRichSpan with T or KClass instead",
-        replaceWith = ReplaceWith("isRichSpan<>()"),
+        replaceWith = ReplaceWith("isRichSpan<T>()"),
         level = DeprecationLevel.WARNING,
     )
     public fun isRichSpan(spanStyle: RichSpanStyle): Boolean =
