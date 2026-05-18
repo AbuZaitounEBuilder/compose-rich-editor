@@ -64,6 +64,55 @@ public class RichTextState internal constructor(
     internal val usedInlineContentMapKeys = mutableSetOf<String>()
 
     /**
+     * Measured pixel widths (in `sp`) of list-prefix strings ("• ", "1. ", "10. ", etc.),
+     * captured by [adjustRichParagraphLayout] after each text layout. Used to pre-populate
+     * `startTextWidth` on freshly-created [ConfigurableStartTextWidth] paragraph types
+     * before the first paint, so toggle-list, setMarkdown, setHtml, and paste paths render
+     * the correct `TextIndent` on the very first frame instead of relying on the
+     * onTextLayout self-correction (which causes a one-frame "indent jump" flicker).
+     */
+    internal val startTextWidthCache: MutableMap<String, TextUnit> = mutableMapOf()
+
+    /**
+     * Pending HTML from clipboard, set by platform clipboard managers during [getClipEntry].
+     * Consumed by [onTextFieldValueChange] on the next text addition (paste).
+     */
+    internal var pendingClipboardHtml: String? = null
+
+    /**
+     * The last non-collapsed selection. Updated whenever the selection changes from a
+     * non-collapsed range to a different value. Used by clipboard managers on platforms
+     * (e.g. Android) where the selection collapses before [setClipEntry] is called.
+     */
+    internal var lastNonCollapsedSelection: TextRange = TextRange.Zero
+
+    /**
+     * Returns the best available selection for copy operations.
+     * Prefers the current selection if it's non-collapsed, otherwise falls back
+     * to [lastNonCollapsedSelection]. Returns null if neither is usable.
+     */
+    internal val copySelection: TextRange?
+        get() {
+            if (!selection.collapsed) return selection
+            if (!lastNonCollapsedSelection.collapsed) return lastNonCollapsedSelection
+            return null
+        }
+
+    /**
+     * Controls visibility of text selection handles (the draggable indicators at the
+     * start/end of a selection). When `false`, handles are hidden but the selection
+     * highlight remains visible. Useful when a formatting toolbar is displayed and
+     * handles would visually overlap with it.
+     */
+    public var selectionHandlesVisible: Boolean by mutableStateOf(true)
+
+    /**
+     * Whether the text field is currently focused.
+     * Updated by [BasicRichTextEditor] via [onFocusChanged].
+     */
+    internal var isFocused: Boolean = false
+
+    /**
      * The annotated string representing the rich text.
      */
     public var annotatedString: AnnotatedString by mutableStateOf(AnnotatedString(text = ""))
