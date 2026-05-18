@@ -153,6 +153,14 @@ public class RichTextState internal constructor(
         }
 
     /**
+     * Controls visibility of text selection handles (the draggable indicators at the
+     * start/end of a selection). When `false`, handles are hidden but the selection
+     * highlight remains visible. Useful when a formatting toolbar is displayed and
+     * handles would visually overlap with it.
+     */
+    public var selectionHandlesVisible: Boolean by mutableStateOf(true)
+
+    /**
      * Whether the text field is currently focused.
      * Updated by [BasicRichTextEditor] via [onFocusChanged].
      */

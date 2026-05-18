@@ -124,7 +124,16 @@ public fun RichTextEditor(
     }
     val mergedTextStyle = textStyle.merge(TextStyle(color = textColor))
 
-    CompositionLocalProvider(LocalTextSelectionColors provides colors.selectionColors) {
+    val effectiveSelectionColors = if (!state.selectionHandlesVisible) {
+        androidx.compose.foundation.text.selection.TextSelectionColors(
+            handleColor = androidx.compose.ui.graphics.Color.Transparent,
+            backgroundColor = colors.selectionColors.backgroundColor
+        )
+    } else {
+        colors.selectionColors
+    }
+
+    CompositionLocalProvider(LocalTextSelectionColors provides effectiveSelectionColors) {
         BasicRichTextEditor(
             state = state,
             modifier = modifier
