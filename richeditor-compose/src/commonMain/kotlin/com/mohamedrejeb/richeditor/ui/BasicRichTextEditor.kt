@@ -256,7 +256,9 @@ public fun BasicRichTextEditor(
                     Layout(
                         content = { innerTextField() },
                         modifier = Modifier.onPlaced { coords ->
-                            state.textFieldWindowPosition = coords.positionInWindow()
+                            if (coords.isAttached) {
+                                state.textFieldWindowPosition = coords.positionInWindow()
+                            }
                         }
                     ) { measurables, constraints ->
                         val placeable = measurables.first().measure(constraints)
